@@ -60,3 +60,7 @@ pytest
 
 distilbert-base-uncased-finetuned-sst-2-english
 Chosen for its small size and high accuracy for sentiment analysis.
+## Edge Case Handling
+
+* Empty input returns HTTP 422 with a validation error.
+* Very long input is truncated to 512 characters to ensure efficient model inference.

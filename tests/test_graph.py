@@ -1,4 +1,4 @@
-from graph import build_career_graph, get_neighbors
+from src.graph import build_career_graph, get_neighbors
 
 def test_graph_construction():
     transitions = [
