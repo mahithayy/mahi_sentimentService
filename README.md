@@ -11,17 +11,18 @@ This project implements:
 - Exposes REST endpoints for predictions
 - Handles validation and edge cases
 - Includes pytest-based tests
-- Logs requests and prediction results
+- Logs requests and prediction results for observability
 ### 2. Career Transition Graph Builder
 - Builds a PyTorch Geometric graph from career transitions
 - Maps job titles to indices
 - Supports one-hop neighbor lookup
 
-This project mirrors real-world ML service deployment and graph-based data modeling.
+This project mirrors real-world ML service deployment and graph-based data modeling workflows.
 
 ---
 ## Requirements
 - Python 3.10+ (Docker uses Python 3.11)
+- Docker (optional, for container deployment)
 ## Features
 
 ### Sentiment API
@@ -149,7 +150,7 @@ http://127.0.0.1:8000/docs
 
 ```json
 {
-  "text": ["I love this product","I hate this"]
+  "texts": ["I love this product","I hate this"]
 }
 ```
 ---
@@ -189,13 +190,15 @@ pytest
 ```bash
 set PYTHONPATH=.
 pytest
+```
+
 ### Expected Output
 
 ```
 tests/test_api.py ..... PASSED
 tests/test_graph.py ... PASSED
 ```
-```
+
 ## Docker Deployment
 
 ### Build image
