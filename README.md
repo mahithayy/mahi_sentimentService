@@ -11,7 +11,7 @@ This project implements:
 - Exposes REST endpoints for predictions
 - Handles validation and edge cases
 - Includes pytest-based tests
-
+- Logs requests and prediction results
 ### 2. Career Transition Graph Builder
 - Builds a PyTorch Geometric graph from career transitions
 - Maps job titles to indices
@@ -21,7 +21,7 @@ This project mirrors real-world ML service deployment and graph-based data model
 
 ---
 ## Requirements
-- Python 3.10+
+- Python 3.10+ (Docker uses Python 3.11)
 ## Features
 
 ### Sentiment API
@@ -29,13 +29,14 @@ This project mirrors real-world ML service deployment and graph-based data model
 - POST `/predict/batch` — batch predictions (bonus)
 - Input validation with proper HTTP error codes
 - Model loads once at startup for efficiency
-
+- Request timing middleware for performance monitoring
+- Logging of predictions for observability
 ### Graph Module
 - Builds `torch_geometric.data.Data` graph
 - Dynamic job → index mapping
 - Edge attributes store transition years
 - One-hop neighbor lookup
-
+- Self-loop handling
 ### Testing
 - Happy path
 - Edge cases
@@ -50,7 +51,7 @@ This project mirrors real-world ML service deployment and graph-based data model
 - **PyTorch & PyTorch Geometric** — graph construction
 - **pytest** — testing
 - **Pydantic** — request validation
-
+- **Docker** — containerized deployment
 ---
 
 ## Model Used
@@ -72,14 +73,15 @@ This project mirrors real-world ML service deployment and graph-based data model
 sentiment-service/
 │
 ├── src/
-│   ├── main.py        # FastAPI app & endpoints
-│   ├── model.py       # Model loading & prediction
-│   └── graph.py       # Graph construction logic
+│ ├── main.py # FastAPI app, middleware, logging
+│ ├── model.py # Model loading & prediction
+│ └── graph.py # Graph construction logic
 │
 ├── tests/
-│   ├── test_api.py
-│   └── test_graph.py
+│ ├── test_api.py
+│ └── test_graph.py
 │
+├── Dockerfile
 ├── requirements.txt
 ├── README.md
 └── .gitignore
@@ -143,9 +145,22 @@ http://127.0.0.1:8000/docs
   "text": "I love this product"
 }
 ```
+### POST /predict/batch
 
+```json
+{
+  "text": ["I love this product","I hate this"]
+}
+```
 ---
-
+## Logging & Middleware
+The service includes request timing middleware and prediction logging.
+### Example logs
+```
+INFO: POST /predict completed in 0.0321s
+INFO: Prediction made: {'label': 'POSITIVE', 'confidence': 0.99}
+```
+This enables performance monitoring and observability.
 ## Edge Case Handling
 
 ### Sentiment API
@@ -179,4 +194,19 @@ pytest
 ```
 tests/test_api.py ..... PASSED
 tests/test_graph.py ... PASSED
+```
+```
+## Docker Deployment
+
+### Build image
+```bash
+docker build -t sentiment-service .
+```
+### Run container
+```bash
+docker run -p 8000:8000 sentiment-service
+```
+### Test container API
+```bash
+curl http://localhost:8000/docs
 ```
